@@ -7,7 +7,7 @@ You can upload a file and run a SQL query on it. Use the table name generated wh
 
 Example using [this spotify dataset](https://huggingface.co/datasets/maharshipandya/spotify-tracks-dataset/tree/main):
 
-[!sample](./images/sample)
+![sample](./images/sample)
 
 
 # Nuxt Minimal Starter
