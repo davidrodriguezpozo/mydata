@@ -11,13 +11,17 @@
       <thead>
         <tr>
           <th>File Name</th>
-          <th>Table name</th>
+          <th>Extension
+            <div class="tooltip-right tooltip tooltip-primary" data-tip="Use SELECT * FROM read_csv('filename') or SELECT * FROM read_parquet('filename') to SELECT from files">
+              <Icon name="ic:info" />
+            </div>
+          </th>
         </tr>
       </thead>
       <tbody>
-        <tr class="cursor-pointer" v-for="up in uploads" :key="up.name" @click="emit('select-file', up.table)">
+        <tr class="cursor-pointer" v-for="up in uploads" :key="up.name" @click="emit('select-file', up.name)">
           <td>{{ up.name }}</td>
-          <td>{{ up.table }}</td>
+          <td>{{ up.extension }}</td>
         </tr>
       </tbody>
     </table>
@@ -30,7 +34,7 @@
 
 interface Upload {
   name: string;
-  table: string;
+  extension: string;
 }
 const emit = defineEmits(['select-file']);
 const db = useDuckDB();
@@ -41,8 +45,9 @@ async function uploadFile(event: Event) {
   const file = event.target?.files[0];
   if (!file) return;
   loading.value = true;
-  const table = await db.uploadFile(file);
-  uploads.value.push({table: table, name: file.name});
+  await db.uploadFile(file);
+  const ext = file.name.split('.').pop();
+  uploads.value.push({extension: ext, name: file.name});
   loading.value = false;
 }
 </script>

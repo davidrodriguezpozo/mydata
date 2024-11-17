@@ -39,17 +39,18 @@ const processing = ref(false);
 const runningQuery = ref(false);
 const error = ref();
 
-async function selectFile(table: string) {
+async function selectFile(filename: string) {
   processing.value = true;
   fileResults.value = {};
   fileResults.value.rows = [];
-  fileResults.value.length = 0;
+  const ext = filename.split('.').pop()?.toLowerCase();
+  const method = ext === 'csv' ? 'read_csv' : 'read_parquet';
+  const query = `SELECT * FROM ${method}('${filename}') LIMIT 5`;
   const t0 = performance.now();
-  const result = db.queryGenerator(`SELECT * FROM '${table}' LIMIT 5`);
+  const result = db.queryGenerator(query);
   for await (const row of result) {
     fileResults.value.rows.push(row);
     fileResults.value.headers = Object.keys(row);
-    fileResults.value.length++;
   }
   fileResults.value.time = performance.now() - t0;
   processing.value = false;
@@ -62,10 +63,10 @@ async function run(query: string) {
     error.value = false;
     const t0 = performance.now();
     const result = await db.query(query);
+    console.log(result);
     results.value.time = performance.now() - t0;
-    results.value.rows = result.map( r => Object.values(r))
     results.value.headers = Object.keys(result[0])
-    results.value.length = result.length;
+    results.value.rows = result.map( r => Object.values(r))
   } catch (err) {
     error.value = err;
   } finally {
@@ -79,21 +80,16 @@ async function runQuery(query: string) {
     const result = db.queryGenerator(query);
     results.value = {};
     results.value.rows = [];
-    results.value.length = 0;
     const t0 = performance.now();
     error.value = false;
     const rows = [];
     let headers = [] as string[];
-    let length = 0;
     for await (const row of result) {
       rows.push(row);
-      if (length === 0) headers = Object.keys(row);
-      length++;
     }
     results.value.time = performance.now() - t0;
     results.value.rows = rows;
     results.value.headers = headers;
-    results.value.length = length;
   } catch (err) {
     error.value = err;
   } finally {
@@ -102,8 +98,7 @@ async function runQuery(query: string) {
 }
 
 function clear() {
-  results.value = [];
-  headers.value = [];
+  results.value = {};
 }
 
 </script>

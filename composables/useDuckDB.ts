@@ -5,14 +5,14 @@ import duckdb_wasm_eh from '@duckdb/duckdb-wasm/dist/duckdb-eh.wasm?url';
 import eh_worker from '@duckdb/duckdb-wasm/dist/duckdb-browser-eh.worker.js?url';
 
 const MANUAL_BUNDLES: duckdb.DuckDBBundles = {
-    mvp: {
-        mainModule: duckdb_wasm,
-        mainWorker: mvp_worker,
-    },
-    eh: {
-        mainModule: duckdb_wasm_eh,
-        mainWorker: eh_worker,
-    },
+  mvp: {
+    mainModule: duckdb_wasm,
+    mainWorker: mvp_worker,
+  },
+  eh: {
+    mainModule: duckdb_wasm_eh,
+    mainWorker: eh_worker,
+  },
 };
 
 // Select a bundle based on browser checks
@@ -23,7 +23,7 @@ const logger = new duckdb.ConsoleLogger();
 const db = new duckdb.AsyncDuckDB(logger, worker);
 await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
 
-async function loadExtensions(){
+async function loadExtensions() {
   const connection = await db.connect();
   await Promise.all([
     connection.query("INSTALL parquet"),
@@ -75,19 +75,28 @@ const useDuckDB = () => {
     await conn.close();
   }
 
-  const uploadFile = async (file: File): Promise<string> => {
+  const _processCSV = async (file: File): Promise<void> => {
     const content = await file.text();
     await db.registerFileText(file.name, content);
     const c = await connection();
-    const table = file.name.split('.')[0].normalize("NFKD");
-    await c.query(`DROP TABLE IF EXISTS "${table}"`);
-    await c.insertCSVFromPath(file.name, {
-        schema: 'main',
-        name: table,
-        detect: true,
-        dateFormat: 'YYYYMMDD',
-    });
     c.close();
+  }
+
+  const _processParquet = async (file: File): Promise<void> => {
+    console.log('Processing parquet file');
+    await db.registerFileHandle(file.name, file, duckdb.DuckDBDataProtocol.BROWSER_FILEREADER, true);
+  }
+
+  const uploadFile = async (file: File): Promise<string> => {
+    const table = file.name.split('.')[0].normalize("NFKD");
+    const ext = file.name.split('.').pop();
+    if (ext === 'csv') {
+      await _processCSV(file);
+    } else if (ext === 'parquet') {
+      await _processParquet(file);
+    } else {
+      throw new Error('Unsupported file format');
+    }
     return table;
   }
 
