@@ -23,14 +23,19 @@
           </tr>
         </tbody>
       </table>
+      <div v-if="!results.length" class="flex w-full h-full items-center justify-center card card-body card-compact bg-neutral">
+        <slot name="empty">
+          <p>No results to display.</p>
+        </slot>
+      </div>
       <div v-if="results.length > MAX_ROWS" class="flex items-center justify-center w-full">
         <div class="join" v-if="results.length">
           <template v-if="!displayIndex.includes(0)">
             <button class="join-item btn btn-sm" @click="index = 0">1</button>
             <button class="join-item btn btn-sm btn-disabled">...</button>
           </template>
-          <button v-for="i in displayIndex" :key="i" class="join-item btn btn-sm"
-            :class="{ 'btn-active': i === index }" @click="index = i">{{ i + 1 }}</button>
+          <button v-for="i in displayIndex" :key="i" class="join-item btn btn-sm" :class="{ 'btn-active': i === index }"
+            @click="index = i">{{ i + 1 }}</button>
           <template v-if="!displayIndex.includes(lastPage)">
             <button class="join-item btn btn-sm btn-disabled">...</button>
             <button class="join-item btn btn-sm" @click="index = lastPage">{{ lastPage + 1 }}</button>
@@ -60,10 +65,10 @@ const props = defineProps({
 const MAX_ROWS = 100;
 const NEIGHBOURS = 3;
 const index = ref(0);
-const slots = computed( () => Math.ceil(props.results?.length / MAX_ROWS));
-const lastPage = computed( () => slots.value - 1);
+const slots = computed(() => Math.ceil(props.results?.length / MAX_ROWS));
+const lastPage = computed(() => slots.value - 1);
 
-const displayIndex = computed( () => {
+const displayIndex = computed(() => {
   const slots = Math.ceil(props.results?.length / MAX_ROWS);
   const start = Math.max(0, index.value - NEIGHBOURS);
   const end = Math.min(slots, index.value + NEIGHBOURS);

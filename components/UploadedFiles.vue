@@ -1,9 +1,10 @@
 <template>
   <div class="flex-1 card">
-    <span v-if="loading" class="loading loading-ring loading-xs ml-3"></span>
-    <div class="card-header flex items-center justify-between">
+    <div class="card-header flex items-center">
       <h3>Uploaded Files</h3>
-      <input type="file" class="mb-4 file-input file-input-sm  w-full max-w-xs mt-4 file-input-primary"
+      <div class="ml-auto" />
+      <span v-show="loading" class="loading loading-ring ml-auto mr-3"></span>
+      <input type="file" class="mb-4 file-input file-input-sm  w-full max-w-xs mt-4 file-input-primary" 
         @change="uploadFile" />
     </div>
     <table class="table table-striped table-compact table-hover">

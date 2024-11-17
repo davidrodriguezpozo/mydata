@@ -52,7 +52,7 @@ const useDuckDB = () => {
     conn.close();
   }
 
-  async function* query(sql: string): AsyncGenerator<Object> {
+  async function* queryGenerator(sql: string): AsyncGenerator<Object> {
     const conn = await connection();
     // Fetch results layzily
     for await (const batch of await conn.send(sql)) {
@@ -62,6 +62,13 @@ const useDuckDB = () => {
     }
     conn.close();
     return 10;
+  }
+
+  async function query(sql: string): Promise<Object[]> {
+    const conn = await connection();
+    const results = await conn.query(sql);
+    conn.close();
+    return results.toArray().map((row) => row.toJSON());
   }
 
   const close = async (conn: duckdb.AsyncDuckDBConnection): Promise<void> => {
@@ -89,7 +96,8 @@ const useDuckDB = () => {
     query,
     close,
     uploadFile,
-    execute
+    execute,
+    queryGenerator
   }
 }
 
