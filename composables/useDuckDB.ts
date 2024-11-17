@@ -61,7 +61,6 @@ const useDuckDB = () => {
       }
     }
     conn.close();
-    return 10;
   }
 
   async function query(sql: string): Promise<Object[]> {
@@ -78,17 +77,13 @@ const useDuckDB = () => {
   const _processCSV = async (file: File): Promise<void> => {
     const content = await file.text();
     await db.registerFileText(file.name, content);
-    const c = await connection();
-    c.close();
   }
 
   const _processParquet = async (file: File): Promise<void> => {
-    console.log('Processing parquet file');
     await db.registerFileHandle(file.name, file, duckdb.DuckDBDataProtocol.BROWSER_FILEREADER, true);
   }
 
-  const uploadFile = async (file: File): Promise<string> => {
-    const table = file.name.split('.')[0].normalize("NFKD");
+  const uploadFile = async (file: File): Promise<void> => {
     const ext = file.name.split('.').pop();
     if (ext === 'csv') {
       await _processCSV(file);
@@ -97,7 +92,6 @@ const useDuckDB = () => {
     } else {
       throw new Error('Unsupported file format');
     }
-    return table;
   }
 
   return {

@@ -1,6 +1,6 @@
 <template>
   <div class="p-4">
-    <h1 class="prose-xl text-5xl">Nuxt + DuckDB 👋</h1>
+    <h1 class="prose-xl text-5xl">DuckDB 👋</h1>
     <p v-if="processing">Processing... <span class="loading loading-bars loading-xs"></span></p>
     <div class="overflow-x-auto flex gap-3 mt-3">
       <UploadedFiles @select-file="selectFile" />
@@ -14,6 +14,7 @@
         <p>No file selected.</p>
       </template>
     </ResultSet>
+    <div class="divider" />
     <div class="w-full mt-4 h-60">
       <p v-if="runningQuery">Running query... <span class="loading loading-bars loading-xs"></span></p>
       <div class="h-60">

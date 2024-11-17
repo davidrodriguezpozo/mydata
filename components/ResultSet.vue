@@ -3,7 +3,7 @@
     <div class="flex items-center">
       <slot>
       </slot>
-      <span v-if="showDetails" class="ml-4 text-secondary text-xs">Fetched {{ formatNumber(results?.rows?.length || 0) }} rows
+      <span v-if="showDetails" class="ml-4 text-secondary text-sm font-bold">Fetched {{ formatNumber(results?.rows?.length || 0) }} rows
         in {{ formatTime }} seconds</span>
       <Icon :name="show ? 'mdi:eye-off-outline' : 'mdi:eye-outline'" class="cursor-pointer ml-2"
         @click="show = !show" />
