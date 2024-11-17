@@ -1,4 +1,4 @@
-# Run DuckDB embedde in the browser! 🦆🦆🦆
+# Run DuckDB embedded in the browser! 🦆🦆🦆
 
 This is a simple example of how to run DuckDB in the browser using WebAssembly.
 
