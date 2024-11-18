@@ -4,6 +4,7 @@ This is a simple example of how to run DuckDB in the browser using WebAssembly.
 
 You can upload a file and run a SQL query on it. Use the table name generated when uploading it to reference the table in the query.
 
+Live demo [here](https://davidrodriguezpozo.github.io/mydata/)
 
 Example using [this spotify dataset](https://huggingface.co/datasets/maharshipandya/spotify-tracks-dataset/tree/main):
 
