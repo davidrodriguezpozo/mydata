@@ -2,22 +2,24 @@
   <div class="p-4">
     <h1 class="prose-xl text-5xl">DuckDB 👋</h1>
     <p v-if="processing">Processing... <span class="loading loading-bars loading-xs"></span></p>
-    <div class="overflow-x-auto flex gap-3 mt-3">
+    <div class="overflow-x-auto flex gap-3 mt-3 min-h-48">
       <UploadedFiles @select-file="selectFile" />
       <div class="flex-0 divider divider-horizontal" />
-      <Editor @run-query="run" :error="error" />
+      <ResultSet :results="fileResults">
+        <h1>File preview</h1>
+        <template #empty>
+          <p>No file selected.</p>
+        </template>
+      </ResultSet>
     </div>
     <div class="divider" />
-    <ResultSet :results="fileResults">
-      <h1>File preview</h1>
-      <template #empty>
-        <p>No file selected.</p>
-      </template>
-    </ResultSet>
-    <div class="divider" />
-    <div class="w-full mt-4 h-60">
+    <Editor @run-query="run" :error="error" />
+    <div class="border-t pt-3 px-2 rounded-t-xl w-full absolute mt-4 left-0 bottom-0 !border-neutral-700 bg-base-100 expand h-60 flex flex-col" ref="resultsRef">
+      <div class="flex items-center justify-center cursor-pointer" @click="expandResults">
+        <Icon :name="expanded ? 'mdi:chevron-down' : 'mdi:chevron-up'" />
+      </div>
       <p v-if="runningQuery">Running query... <span class="loading loading-bars loading-xs"></span></p>
-      <div class="h-60">
+      <div class="h-[93%]">
         <ResultSet :results="results" show-details>
           <div class="tooltip-right tooltip mr-3 flex" data-tip="Refresh">
             <Icon name="ic:refresh" class="cursor-pointer" @click="clear" />
@@ -38,7 +40,10 @@ const fileResults = ref({} as QueryResult);
 const results = ref<QueryResult>({} as QueryResult);
 const processing = ref(false);
 const runningQuery = ref(false);
+const resultsRef = ref();
 const error = ref();
+const expanded = ref(false);
+useHead({ title: 'DuckDB Editor 👋 ' });
 
 async function selectFile(filename: string) {
   processing.value = true;
@@ -64,10 +69,9 @@ async function run(query: string) {
     error.value = false;
     const t0 = performance.now();
     const result = await db.query(query);
-    console.log(result);
     results.value.time = performance.now() - t0;
     results.value.headers = Object.keys(result[0])
-    results.value.rows = result.map( r => Object.values(r))
+    results.value.rows = result.map(r => Object.values(r))
   } catch (err) {
     error.value = err;
   } finally {
@@ -98,8 +102,22 @@ async function runQuery(query: string) {
   }
 }
 
+function expandResults() {
+  resultsRef.value.classList.toggle("h-dvh");
+  expanded.value = !expanded.value;
+}
+
 function clear() {
   results.value = {};
 }
 
 </script>
+<style scoped>
+
+.expand {
+  transition: all 0.5s;
+}
+
+
+
+</style>

@@ -5,6 +5,13 @@ export default defineNuxtConfig({
   modules: ["@nuxtjs/tailwindcss", '@nuxt/icon'],
   ssr: false,
   css: ['./assets/css/main.css'],
+  vite: {
+    esbuild: {
+      supported: {
+        'top-level-await': true,
+      }
+    },
+  },
   postcss: {
     plugins: {
       tailwindcss: {},
