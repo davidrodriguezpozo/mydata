@@ -2,10 +2,10 @@
   <div class="p-4">
     <h1 class="prose-xl text-5xl">DuckDB 👋</h1>
     <p v-if="processing">Processing... <span class="loading loading-bars loading-xs"></span></p>
-    <div class="overflow-x-auto flex gap-3 mt-3 min-h-48">
+    <div class="overflow-x-auto flex gap-3 mt-3 min-h-48 max-h-52">
       <UploadedFiles @select-file="selectFile" />
       <div class="flex-0 divider divider-horizontal" />
-      <ResultSet :results="fileResults">
+      <ResultSet :results="fileResults" class="!h-48">
         <h1>File preview</h1>
         <template #empty>
           <p>No file selected.</p>
@@ -14,7 +14,7 @@
     </div>
     <div class="divider" />
     <Editor @run-query="run" :error="error" />
-    <div class="border-t pt-3 px-2 rounded-t-xl w-full absolute mt-4 left-0 bottom-0 !border-neutral-700 bg-base-100 expand h-60 flex flex-col" ref="resultsRef">
+    <div class="z-50 border-t pt-3 px-2 rounded-t-xl w-full absolute mt-4 left-0 bottom-0 !border-neutral-700 bg-base-100 expand h-60 flex flex-col" ref="resultsRef">
       <div class="flex items-center justify-center cursor-pointer" @click="expandResults">
         <Icon :name="expanded ? 'mdi:chevron-down' : 'mdi:chevron-up'" />
       </div>
