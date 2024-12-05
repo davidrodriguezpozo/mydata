@@ -6,8 +6,6 @@
       <span v-if="showDetails" class="ml-4 text-secondary text-sm font-bold">Fetched {{
         formatNumber(results?.rows?.length || 0) }} rows
         in {{ formatTime }} seconds</span>
-      <Icon :name="show ? 'mdi:eye-off-outline' : 'mdi:eye-outline'" class="cursor-pointer ml-2"
-        @click="show = !show" />
     </div>
     <div class="overflow-y-auto !max-h-[100%] mt-4">
       <table class="table table-pin-rows table-xs h-full w-full overflow-y-auto" v-if="show && results.rows?.length">
@@ -49,7 +47,7 @@
 </template>
 <script setup lang="ts">
 
-interface QueryResult {
+export interface QueryResult {
   rows: string[][];
   headers: string[];
   time: number;

@@ -1,28 +1,34 @@
 <template>
-  <div class="flex-1 flex flex-col">
-    <h1>SQL Editor (Press <span class="kbd kbd-sm">Shift</span> + <span class="kbd kbd-sm">Enter</span> to run the
-      query)</h1>
+  <div class="flex-1 flex max-h-[50%]">
+    <div class="flex-1 flex flex-col">
+      <h1>SQL Editor (Press <span class="kbd kbd-sm">Shift</span> + <span class="kbd kbd-sm">Enter</span> to run the
+        query)</h1>
 
-    <div v-if="error" role="alert" class="alert alert-error my-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      <span>{{ error }}</span>
+      <div v-if="error" role="alert" class="alert alert-error my-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{{ error }}</span>
+      </div>
+      <div class="w-full mt-4 flex-1 mockup-code bg-black text-white font-semibold">
+        <textarea placeholder="SELECT * FROM read_csv('myfile.csv')"
+          class="w-full resize-none h-full p-2 px-4 bg-transparent border-none focus:ring-0 focus:border-none focus:outline-none textarea"
+          rows="5" v-model="query" @keydown.enter.shift.exact.prevent="execute" @keydown.tab.prevent="addTab"
+          @keydown.up.prevent="goBack" @keydown.down.prevent="goForward" />
+      </div>
     </div>
-    <div class="w-full mt-4 flex-1 mockup-code bg-black text-white font-semibold">
-      <textarea placeholder="SELECT * FROM read_csv('myfile.csv')" class="w-full resize-none h-full p-2 px-4 bg-transparent border-none focus:ring-0 focus:border-none focus:outline-none textarea" rows="5" v-model="query"
-        @keydown.enter.shift.exact.prevent="execute" 
-        @keydown.tab.prevent="addTab"
-        @keydown.up.prevent="goBack"
-        @keydown.down.prevent="goForward"
-      />
+    <div class="w-1/4 ml-4 flex flex-col">
+      <h1>History</h1>
+      <div class="flex flex-col max-h-full border mt-5 rounded-lg border-base-200 text-sm p-2 flex-1 overflow-auto">
+        <p class="w-full text-clip overflow-clip break-keep cursor-pointer hover:text-white p-1" v-for="(item, i) in history" :key="i" @click="query = item">{{ item }}</p>
+      </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 
-const query = ref('');
+const query = ref("");
 const emit = defineEmits(['run-query']);
 
 function addTab(event: KeyboardEvent) {
@@ -59,5 +65,4 @@ const execute = () => {
 
 defineProps(['error']);
 </script>
-<style scoped>
-</style>
+<style scoped></style>
